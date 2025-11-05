@@ -24,3 +24,5 @@ L’application proposera des **quiz à niveaux de difficulté progressifs** (fa
 * Pas de jeu hors ligne (offline).
 * Pas d’interface d’administration ni de génération automatique de nouvelles questions.
 * Pas de support vocal, d’aide ou d’indices pendant le quiz.
+
+---

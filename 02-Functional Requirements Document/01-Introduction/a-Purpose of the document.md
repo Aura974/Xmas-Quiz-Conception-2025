@@ -12,3 +12,5 @@ Il vise à :
 * Poser les **bases nécessaires** à la rédaction du cahier des charges technique (TSD) qui suivra.
 
 Le CdCF constitue donc un **document de référence évolutif**, garantissant la cohérence entre la vision initiale du projet, le développement et la version finale livrée.
+
+---

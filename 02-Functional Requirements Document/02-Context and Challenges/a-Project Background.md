@@ -7,3 +7,5 @@ Il s’agit d’une **application web privée**, développée pour un usage excl
 Le projet n’a pas vocation à être diffusé publiquement ni à véhiculer un message culturel spécifique. Le thème “**Noël à La Réunion**” sert avant tout de **fil conducteur visuel et narratif**, apportant une touche locale et chaleureuse à l’expérience utilisateur.
 
 Cette initiative s’inscrit dans une démarche de **valorisation du lien social** en entreprise et de **promotion d’outils numériques internes** simples, accessibles et attractifs.
+
+---
