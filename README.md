@@ -1,6 +1,6 @@
 # CONCEPTION
 
-This folder regroups the conception documents for <NAME> App.
+Ce dossier regroupe les documents de conception pour l'application de Quiz de Noël de la Nordev.
 
 ## Table of contents
 
