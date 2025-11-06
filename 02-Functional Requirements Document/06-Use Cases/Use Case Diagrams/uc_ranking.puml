@@ -1,0 +1,30 @@
+@startuml ranking
+left to right direction
+skinparam actorStyle awesome
+
+actor "Enfant (Joueur)" as Joueur
+actor "Parent / Encadrant" as Parent
+actor "Service Classement\n(API)" as API
+
+rectangle "Sous-système : Consultation du classement" as SystemB2 {
+  usecase "Consulter classement Points" as UC_LeaderboardPoints
+  usecase "Consulter classement Temps" as UC_LeaderboardTime
+  usecase "Actualiser données\n(périodiquement)" as UC_Refresh
+  usecase "Afficher message d'erreur\nsi connexion perdue" as UC_NetErr
+}
+
+' Forcer l’API à droite du cadre via un lien caché
+SystemB2 -[hidden]-> API
+
+Joueur --> UC_LeaderboardPoints
+Joueur --> UC_LeaderboardTime
+Parent --> UC_LeaderboardPoints
+Parent --> UC_LeaderboardTime
+
+UC_LeaderboardPoints --> UC_Refresh : <<include>>
+UC_LeaderboardTime --> UC_Refresh : <<include>>
+UC_Refresh --> UC_NetErr : <<extend>>
+
+UC_LeaderboardPoints --> API : Lecture scores
+UC_LeaderboardTime --> API : Lecture temps
+@enduml

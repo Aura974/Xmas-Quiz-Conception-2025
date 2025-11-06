@@ -1,0 +1,24 @@
+@startuml scoring
+left to right direction
+skinparam actorStyle awesome
+
+actor "Enfant (Joueur)" as Joueur
+actor "Service Classement\n(API)" as API
+
+rectangle "Sous-système : Soumission du score" as SystemB1 {
+  usecase "Saisir pseudo" as UC_Pseudo
+  usecase "Valider pseudo\n(filtrage, unicité/jour)" as UC_Validate
+  usecase "Soumettre score et temps" as UC_Submit
+  usecase "Gérer erreur réseau\n(message de réessai)" as UC_NetErr
+}
+
+' Forcer l’API à droite du cadre via un lien caché
+SystemB1 -[hidden]-> API
+
+Joueur --> UC_Pseudo
+UC_Pseudo --> UC_Validate : <<include>>
+UC_Pseudo --> UC_Submit : <<include>>
+UC_Submit --> UC_NetErr : <<extend>>
+
+UC_Submit --> API : Envoi score & temps
+@enduml

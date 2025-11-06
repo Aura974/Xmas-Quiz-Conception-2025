@@ -1,0 +1,30 @@
+@startuml main
+left to right direction
+skinparam actorStyle awesome
+skinparam rectangle {
+  BackgroundColor #FFFFFF
+  BorderColor #888
+  RoundCorner 12
+}
+
+actor "Enfant (Joueur)" as Joueur
+
+rectangle "Système : Quiz de Noël" as SystemA {
+  usecase "Sélectionner le niveau" as UC_Level
+  usecase "Démarrer la partie\n(chrono global)" as UC_Start
+  usecase "Tirer 10 questions\naléatoires du niveau" as UC_Random
+  usecase "Répondre aux questions\n(3/4 choix ou Vrai/Faux)" as UC_Answer
+  usecase "Afficher correction\n+ feedback immédiat" as UC_Feedback
+  usecase "Calculer score final\n+ temps total" as UC_Score
+  usecase "Afficher écran de fin\n(score, temps, rejouer)" as UC_End
+}
+
+Joueur --> UC_Level
+Joueur --> UC_Start
+UC_Start --> UC_Random : <<include>>
+UC_Start --> UC_Answer : <<include>>
+UC_Answer --> UC_Feedback : <<include>>
+UC_Start --> UC_Score : <<include>>
+UC_Score --> UC_End : <<include>>
+
+@enduml

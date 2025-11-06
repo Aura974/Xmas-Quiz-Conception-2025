@@ -1,0 +1,33 @@
+@startuml accessibility
+left to right direction
+skinparam actorStyle awesome
+
+actor "Enfant (Joueur)" as Joueur
+actor "Parent / Encadrant" as Parent
+actor "Employé Nordev\n(opérateur totem)" as Operateur
+
+rectangle "Système : UI, Accessibilité & Cadre" as SystemC {
+  usecase "Appliquer thème visuel\n« Noël à La Réunion »" as UC_Theme
+  usecase "Respecter accessibilité AA\n(police dys-friendly, contrastes)" as UC_A11y
+  usecase "Afficher chrono global\n(visuel constant)" as UC_ChronoUI
+  usecase "Afficher règles du jeu\n& mentions légales" as UC_Legal
+  usecase "Gérer erreurs réseau\n(non bloquant)" as UC_NetUI
+}
+
+Joueur --> UC_Theme
+Joueur --> UC_ChronoUI
+Joueur --> UC_Legal
+
+Parent --> UC_Legal : consulte
+Operateur --> UC_Legal : vérifie
+
+' Contraintes transverses appliquées à l'UI
+UC_Theme -down-> UC_A11y : <<include>>
+UC_ChronoUI -down-> UC_A11y : <<include>>
+UC_Legal -down-> UC_A11y : <<include>>
+
+' Gestion des erreurs d'interface
+UC_Theme --> UC_NetUI : <<extend>>
+UC_ChronoUI --> UC_NetUI : <<extend>>
+
+@enduml

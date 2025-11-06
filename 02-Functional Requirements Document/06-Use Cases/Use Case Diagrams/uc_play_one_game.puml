@@ -1,0 +1,25 @@
+@startuml play one game
+left to right direction
+skinparam actorStyle awesome
+
+actor "Enfant (Joueur)" as Joueur
+
+rectangle "Sous-système : Jouer une partie" as Sub {
+  usecase "Jouer une partie\n(démarrer -> 10 questions -> fin)" as UC_Play
+  usecase "Initialiser partie\n(niveau, chrono, seed aléatoire)" as UC_Init
+  usecase "Tirer 10 questions\naléatoires du niveau" as UC_Random
+  usecase "Pour chaque question :\n- Afficher énoncé (image/texte)\n- Capturer réponse\n- Montrer bonne réponse\n- Feedback réussite/échec" as UC_PerQuestion
+  usecase "Gérer chrono global" as UC_Chrono
+  usecase "Calculer score final\n+ temps total" as UC_Score
+  usecase "Afficher écran de fin\n(score, temps, CTA classement/rejouer)" as UC_End
+}
+
+Joueur --> UC_Play
+UC_Play --> UC_Init : <<include>>
+UC_Play --> UC_Random : <<include>>
+UC_Play --> UC_PerQuestion : <<include>>
+UC_Play --> UC_Chrono : <<include>>
+UC_Play --> UC_Score : <<include>>
+UC_Play --> UC_End : <<include>>
+
+@enduml
