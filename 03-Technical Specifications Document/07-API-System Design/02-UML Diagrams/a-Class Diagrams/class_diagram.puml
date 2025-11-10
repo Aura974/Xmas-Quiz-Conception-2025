@@ -1,0 +1,56 @@
+@startuml class diagram
+title Quiz de Noël — Diagramme de classes (domaine + API)
+
+' === Types & Domaines ===
+enum NiveauType {
+  facile
+  intermediaire
+  avance
+}
+
+class Jour {
+  +date_jour: Date <<PK>>
+}
+
+class Partie {
+  +id_partie: Bigint <<PK>>
+  +pseudo: "String[12]"
+  +niveau: NiveauType
+  +points: Smallint
+  +temps_total: Integer
+  +created_at: Timestamp
+  +date_jour: Date <<FK>>
+}
+
+' Association (composition logique) : un jour agrège des parties
+Jour "1" o-- "0..*" Partie : CLASSEMENT_DU_JOUR\n(FK, ON DELETE CASCADE)
+
+' === Couche applicative (API / Service) ===
+class ScoreService {
+  +enregistrerScore(pseudo, niveau, points, temps_total): Partie
+  +topPoints(date_jour, limit=100): List<Partie>
+  +topTemps(date_jour, limit=100): List<Partie>
+}
+
+class ScoresAPI {
+  +POST /api/scores
+  +GET  /api/leaderboard?type=points|temps&limit=100
+  +GET  /api/health
+}
+
+ScoresAPI ..> ScoreService
+ScoreService ..> Partie
+ScoreService ..> Jour
+
+' === Contraintes (notes) ===
+note right of Partie
+- CHECK points ∈ [0..10]
+- CHECK temps_total > 0
+- UNIQUE (pseudo, date_jour)
+end note
+
+note left of Jour
+- Clé logique pour le reset quotidien (UTC+4)
+- Indice(s) pour tri des classements
+end note
+@enduml
