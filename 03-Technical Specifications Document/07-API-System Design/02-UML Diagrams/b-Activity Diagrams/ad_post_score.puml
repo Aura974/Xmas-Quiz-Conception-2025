@@ -1,0 +1,44 @@
+@startuml post score
+title POST /api/scores — Diagramme d'activité
+
+|Client|
+start
+:Fin de partie;
+:Prépare {pseudo, niveau, points, temps_total};
+:POST /api/scores;
+
+|API (DRF)|
+:Vérif. throttling (limitation débit);
+if (Dépassé ?) then (oui)
+  :HTTP 429 Too Many Requests;
+  stop
+else (non)
+endif
+
+:Parser JSON + Serializer.validate();
+if (Données valides ?) then (non)
+  :HTTP 400 {field, message};
+  stop
+endif
+
+|Service métier|
+:date_jour = today (UTC+4);
+:Normaliser pseudo;
+
+|Base de données|
+:SELECT id FROM partie
+ WHERE pseudo=? AND date_jour=?;
+if (Existe déjà ?) then (oui)
+  |API (DRF)|
+  :HTTP 409 ALREADY_SUBMITTED;
+  stop
+else (non)
+endif
+
+|Base de données|
+:INSERT INTO partie(...);
+|API (DRF)|
+:HTTP 201 {id_partie};
+
+stop
+@enduml

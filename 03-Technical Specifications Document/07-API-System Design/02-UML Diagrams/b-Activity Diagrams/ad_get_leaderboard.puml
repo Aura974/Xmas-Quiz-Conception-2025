@@ -1,0 +1,31 @@
+@startuml get leaderboard
+title GET /api/leaderboard — récupération du classement du jour
+
+start
+:Réception requête GET /api/leaderboard;
+:Lire paramètres (type, limit);
+if (type valide ?) then (non)
+  :HTTP 400 {"message": "Paramètre invalide"};
+  stop
+endif
+
+:date_jour = today (UTC+4);
+
+if (type == "points") then (oui)
+  :SELECT pseudo, points, temps_total
+   FROM partie
+   WHERE date_jour = today
+   ORDER BY points DESC, temps_total ASC
+   LIMIT limit;
+else (non)
+  :SELECT pseudo, points, temps_total
+   FROM partie
+   WHERE date_jour = today
+   ORDER BY temps_total ASC, points DESC
+   LIMIT limit;
+endif
+
+:Formater résultats JSON [{rang, pseudo, points, temps_total}];
+:HTTP 200 {classement: [...]};
+stop
+@enduml

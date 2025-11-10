@@ -1,0 +1,34 @@
+@startuml game
+title Déroulé d'une partie
+
+start
+:Écran d'accueil;
+:Choisir niveau (facile / intermédiaire / avancé);
+:Initialiser chrono = 0, points = 0, i = 1;
+
+while (i <= 10 ?)
+  :Afficher question i;
+  :Démarrer / continuer chrono;
+  :Choisir réponse;
+  if (Bonne réponse ?) then (oui)
+    :points = points + 1;
+  endif
+  :Afficher feedback;
+  :i = i + 1;
+endwhile
+
+:Arrêter chrono; temps_total = chrono;
+:Afficher récapitulatif (points, temps_total);
+
+if (Souhaiter apparaître au classement ?) then (oui)
+  repeat :Saisir pseudo;
+  backward :Afficher message d'erreur;
+  repeat while (Pseudo valide ?) is (non) not (oui)
+  :Envoyer score à l'API (/api/scores);
+  :Afficher classement du jour;
+else (non)
+  :Fin sans soumission de score;
+endif
+
+stop
+@enduml

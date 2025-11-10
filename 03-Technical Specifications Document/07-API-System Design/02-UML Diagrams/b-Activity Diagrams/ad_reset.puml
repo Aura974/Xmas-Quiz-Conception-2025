@@ -1,0 +1,30 @@
+@startuml reset
+title Reset quotidien des scores (00:00 UTC+4)
+
+start
+:Déclenchement planifié (cron / commande Django);
+:today = date courante (UTC+4);
+
+:Ouvrir transaction;
+
+:DELETE FROM partie WHERE date_jour < today;
+:DELETE FROM jour   WHERE date_jour < today;
+
+if (jour(today) existe ?) then (oui)
+  :Commit;
+  :Log "reset OK (today)";
+  stop
+else (non)
+  :INSERT INTO jour(date_jour) VALUES (today);
+  if (Insertion OK ?) then (oui)
+    :Commit;
+    :Log "reset OK (today)";
+    stop
+  else (non)
+    :Rollback;
+    :Log "reset KO";
+    stop
+  endif
+endif
+@enduml
+
