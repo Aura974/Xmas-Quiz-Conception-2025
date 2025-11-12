@@ -1,0 +1,48 @@
+@startuml
+title Déroulé complet (séquence) — Soumission score puis affichage du classement
+autonumber
+
+actor Client as UI
+participant "Nginx\n(HTTPS)" as NGINX
+participant "Gunicorn\n(WSGI)" as GUNI
+participant "Django REST API\n(DRF Views/Serializers)" as API
+participant "Service métier\n(ScoreService)" as SVC
+database "PostgreSQL" as DB
+
+== POST /api/scores ==
+UI -> NGINX: POST /api/scores {pseudo,niveau,points,temps_total}
+NGINX -> GUNI: proxy (socket)
+GUNI -> API: requête WSGI
+
+API -> API: Throttling + Serializer.validate()
+alt Données invalides
+  API --> UI: HTTP 400 {field,message}
+  return
+else OK
+  API -> SVC: enregistrerScore(pseudo,niveau,points,temps_total)
+  SVC -> DB: SELECT id FROM partie WHERE pseudo=? AND date_jour=today
+  alt Déjà soumis
+    SVC --> API: Conflit
+    API --> UI: HTTP 409 {code:"ALREADY_SUBMITTED"}
+    return
+  else Nouveau
+    SVC -> DB: INSERT INTO partie(...)
+    SVC --> API: id_partie
+    API --> UI: HTTP 201 {id_partie}
+  end
+end
+
+== GET /api/leaderboard ==
+UI -> NGINX: GET /api/leaderboard?type=points|temps&limit=100
+NGINX -> GUNI: proxy
+GUNI -> API: requête WSGI
+API -> SVC: fetchLeaderboard(type, today, limit)
+alt type = points
+  SVC -> DB: SELECT ... WHERE date_jour=today ORDER BY points DESC, temps_total ASC LIMIT ?
+else type = temps
+  SVC -> DB: SELECT ... WHERE date_jour=today ORDER BY temps_total ASC, points DESC LIMIT ?
+end
+SVC --> API: liste [{pseudo,points,temps_total}]
+API --> UI: HTTP 200 {classement:[...]}
+
+@enduml
