@@ -23,11 +23,6 @@ L’application est destinée à être utilisée **sur poste totem**, en **mode 
 
 ---
 
-Exactement 👌 très bonne remarque — la **1.3** doit donc rester **générique et orientée objectifs**, sans préjuger des choix de stack à venir.
-Voici la version **corrigée et neutre** de la sous-partie :
-
----
-
 ## **Objectifs techniques principaux**
 
 Le développement du **Quiz de Noël** vise à mettre en œuvre une **application web légère, stable et sécurisée**, répondant aux exigences fonctionnelles du CdCF tout en restant techniquement simple à déployer et à maintenir.

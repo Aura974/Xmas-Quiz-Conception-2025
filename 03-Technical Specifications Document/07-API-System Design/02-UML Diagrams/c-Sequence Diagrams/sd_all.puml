@@ -1,4 +1,4 @@
-@startuml
+@startuml all
 title Déroulé complet (séquence) — Soumission score puis affichage du classement
 autonumber
 
