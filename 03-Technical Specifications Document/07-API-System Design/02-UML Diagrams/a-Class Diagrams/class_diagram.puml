@@ -2,54 +2,60 @@
 title Quiz de Noël — Diagramme de classes (domaine + API)
 
 ' === Types & Domaines ===
-enum NiveauType {
+enum LevelType {
   facile
-  intermediaire
-  avance
+  intermédiaire
+  avancé
 }
 
-class Jour {
-  +date_jour: Date <<PK>>
+class Day {
+  +day_date: Date <<PK>>
 }
 
-class Partie {
-  +id_partie: Bigint <<PK>>
-  +pseudo: "String[12]"
-  +niveau: NiveauType
+class Game {
+  +game_id: Bigint <<PK>>
+  +nickname: "String[12]"
+  +level: LevelType
   +points: Smallint
-  +temps_total: Integer
+  +total_time: Integer
   +created_at: Timestamp
-  +date_jour: Date <<FK>>
+  +day_date: Date <<FK>>
 }
 
 ' Association (composition logique) : un jour agrège des parties
-Jour "1" o-- "0..*" Partie : CLASSEMENT_DU_JOUR\n(FK, ON DELETE CASCADE)
+Day "1" o-- "0..*" Game : DAY_RANKING\n(FK, ON DELETE CASCADE)
 
 ' === Couche applicative (API / Service) ===
 class ScoreService {
-  +enregistrerScore(pseudo, niveau, points, temps_total): Partie
-  +topPoints(date_jour, limit=100): List<Partie>
-  +topTemps(date_jour, limit=100): List<Partie>
+  +saveScore(nickname, level, points, total_time): Game
+  +topPoints(date_jour, limit=100): List<Game>
+  +topTime(date_jour, limit=100): List<Game>
 }
 
 class ScoresAPI {
-  +POST /api/scores
-  +GET  /api/leaderboard?type=points|temps&limit=100
-  +GET  /api/health
+  +postScore(body): 201
+  +getLeaderboard(type, limit=100): 200
+  +getHealth(): 200
 }
 
-ScoresAPI ..> ScoreService
-ScoreService ..> Partie
-ScoreService ..> Jour
-
-' === Contraintes (notes) ===
-note right of Partie
-- CHECK points ∈ [0..10]
-- CHECK temps_total > 0
-- UNIQUE (pseudo, date_jour)
+note right of ScoresAPI
+POST /api/scores
+GET  /api/leaderboard?type=points|time&limit=100
+GET  /api/health
 end note
 
-note left of Jour
+ScoresAPI ..> ScoreService
+ScoreService ..> Game
+ScoreService ..> Day
+
+' === Contraintes (notes) ===
+note right of Game
+- CHECK points ∈ [0..10]
+- CHECK total_time > 0
+- UNIQUE (nickname, day_date)
+end note
+
+note left of Day
 - Clé logique pour le reset quotidien (UTC+4)
 - Indice(s) pour tri des classements
 end note

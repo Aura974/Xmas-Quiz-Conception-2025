@@ -1,7 +1,7 @@
 -- Type ENUM (créé une seule fois si absent)
 DO $$
 BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'niveau_type') THEN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'level_type') THEN
     CREATE TYPE level_type AS ENUM ('facile', 'intermédiaire', 'avancé');
   END IF;
 END$$;
@@ -12,12 +12,12 @@ CREATE TABLE IF NOT EXISTS day(
 );
 
 -- Table GAME
-CREATE TABLE IF NOT EXISTS partie(
+CREATE TABLE IF NOT EXISTS game(
   game_id     BIGSERIAL    PRIMARY KEY,
   nickname    VARCHAR(12)  NOT NULL,
-  level       niveau_type  NOT NULL,
+  level       level_type  NOT NULL,
   points      SMALLINT     NOT NULL CHECK(points BETWEEN 0 AND 10),
-  total_time  INTEGER      NOT NULL CHECK(temps_total > 0),
+  total_time  INTEGER      NOT NULL CHECK(total_time > 0),
   created_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
   day_date    DATE         NOT NULL,
   CONSTRAINT uq_game_nickname_day UNIQUE (nickname, day_date),

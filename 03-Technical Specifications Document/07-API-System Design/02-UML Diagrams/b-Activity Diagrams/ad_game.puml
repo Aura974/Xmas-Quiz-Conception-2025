@@ -5,10 +5,10 @@ start
 :Écran d'accueil;
 :Choisir niveau (facile / intermédiaire / avancé);
 :Initialiser chrono = 0, points = 0, i = 1;
+:Démarrer chrono;
 
 while (i <= 10 ?)
   :Afficher question i;
-  :Démarrer / continuer chrono;
   :Choisir réponse;
   if (Bonne réponse ?) then (oui)
     :points = points + 1;
@@ -25,7 +25,13 @@ if (Souhaiter apparaître au classement ?) then (oui)
   backward :Afficher message d'erreur;
   repeat while (Pseudo valide ?) is (non) not (oui)
   :Envoyer score à l'API (/api/scores);
+if (Soumission réussie ?) then (oui)
+  :Afficher confirmation d'envoi;
   :Afficher classement du jour;
+else (non)
+  :Afficher message "Échec d'envoi";
+  :Proposer Réessayer / Rejouer;
+endif
 else (non)
   :Fin sans soumission de score;
 endif

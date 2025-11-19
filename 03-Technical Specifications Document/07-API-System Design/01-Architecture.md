@@ -10,18 +10,18 @@
     * `POST /api/scores` → enregistre un score.
     * `GET /api/leaderboard` → renvoie le classement du jour.
     * `GET /api/health` → test de disponibilité.
-  * **Validation :** via les sérializers DRF (`pseudo`, `points`, `temps_total`, `niveau`).
+  * **Validation :** via les sérializers DRF (`nickname`, `points`, `total_time`, `level`).
   * **Throttling :** limitation de débit pour éviter le spam (ex. 5 soumissions/min/IP).
   * **Réponses :** JSON structuré, avec statuts HTTP cohérents (`200`, `201`, `400`, `409`).
 
 * **Service / Domaine**
 
-  * Règles métier : unicité `(pseudo, date_jour)`, bornes `points` et `temps_total`.
+  * Règles métier : unicité `(nickname, day_date)`, bornes `points` et `total_time`.
   * Séparation nette entre logique métier et accès aux données.
 
 * **Accès données**
 
-  * ORM Django (`Partie`, `Jour`) utilisant les index de classement.
+  * ORM Django (`Game`, `Day`) utilisant les index de classement.
   * Gestion automatique des FK et des suppressions en cascade.
 
 * **Persistance**
@@ -42,8 +42,8 @@
 
 | Méthode & URL                     | Entrée attendue                         | Sortie                                     | Règles clés                                 |                            |
 | :-------------------------------- | :-------------------------------------- | :----------------------------------------- | :------------------------------------------ | -------------------------- |
-| `POST /api/scores`                | `{pseudo, niveau, points, temps_total}` | `201 {id_partie}` ou `409` si doublon jour | Unicité `(pseudo, date_jour)`               |                            |
-| `GET /api/leaderboard?type=points` | `temps&limit=100`                        | —                                          | `200 [{rang, pseudo, points, temps_total}]` | Filtre `date_jour = today` |
+| `POST /api/scores`                | `{nickname, level, points, total_time}` | `201 {game_id}` ou `409` si doublon jour | Unicité `(nickname, day_date)`               |                            |
+| `GET /api/leaderboard?type=points` | `temps&limit=100`                        | —                                          | `200 [{rang, nickname, points, total_time}]` | Filtre `day_date = today` |
 | `GET /api/health`                 | —                                       | `200 {status:'ok'}`                        | Vérifie API + base                          |                            |
 
 ---
